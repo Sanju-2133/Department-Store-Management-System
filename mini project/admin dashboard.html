@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial; background: #f3f4f6; padding: 20px; }
+        h1 { color: #11998e; }
+        input, button { padding: 8px; margin: 5px; }
+        button { background: #11998e; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0c8976; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        img { width: 50px; }
+    </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+<button onclick="logoutAdmin()">Logout</button>
+
+<h2>Add New Product</h2>
+<input type="text" id="productName" placeholder="Product Name">
+<input type="number" id="productPrice" placeholder="Price (₹)">
+<input type="text" id="productImage" placeholder="Image URL">
+<button onclick="addProduct()">Add Product</button>
+
+<h2>Product List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="productTable">
+        <!-- Products will appear here -->
+    </tbody>
+</table>
+
+<script>
+    // Restrict access if not admin
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+        window.location.href = "admin.html";
+    }
+
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+
+    // Add product
+    function addProduct() {
+        const name = document.getElementById("productName").value;
+        const price = parseFloat(document.getElementById("productPrice").value);
+        const image = document.getElementById("productImage").value;
+
+        if (!name || !price || !image) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        const product = { name, price, image };
+        products.push(product);
+        localStorage.setItem("products", JSON.stringify(products));
+        renderProducts();
+        clearForm();
+    }
+
+    // Edit product
+    function editProduct(index) {
+        const product = products[index];
+        // Populate form with existing values
+        document.getElementById("productName").value = product.name;
+        document.getElementById("productPrice").value = product.price;
+        document.getElementById("productImage").value = product.image;
+
+        // Change add button to update button
+        const addBtn = document.querySelector('button[onclick="addProduct()"]');
+        addBtn.innerText = "Update Product";
+        addBtn.onclick = function() {
+            updateProduct(index);
+        };
+    }
+
+    // Update product
+    function updateProduct(index) {
+        const name = document.getElementById("productName").value;
+        const price = parseFloat(document.getElementById("productPrice").value);
+        const image = document.getElementById("productImage").value;
+
+        if (!name || !price || !image) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        products[index] = { name, price, image };
+        localStorage.setItem("products", JSON.stringify(products));
+        renderProducts();
+        clearForm();
+
+        // Restore button to Add Product
+        const addBtn = document.querySelector('button[onclick="updateProduct('+index+')"]');
+        addBtn.innerText = "Add Product";
+        addBtn.onclick = addProduct;
+    }
+
+    // Delete product
+    function deleteProduct(index) {
+        if(confirm("Are you sure you want to delete this product?")) {
+            products.splice(index, 1);
+            localStorage.setItem("products", JSON.stringify(products));
+            renderProducts();
+        }
+    }
+
+    // Render products in table
+    function renderProducts() {
+        const table = document.getElementById("productTable");
+        table.innerHTML = "";
+        products.forEach((product, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${product.name}</td>
+                <td>₹${product.price.toFixed(2)}</td>
+
+                <td><img src="${product.image}" alt="${product.name}"></td>
+                <td>
+                    <button onclick="editProduct(${index})">Edit</button>
+                    <button onclick="deleteProduct(${index})">Delete</button>
+                </td>
+            `;
+            table.appendChild(row);
+        });
+    }
+
+    function clearForm() {
+        document.getElementById("productName").value = "";
+        document.getElementById("productPrice").value = "";
+        document.getElementById("productImage").value = "";
+    }
+
+    function logoutAdmin() {
+        localStorage.removeItem("adminLoggedIn");
+        window.location.href = "admin.html";
+    }
+
+    renderProducts();
+</script>
+
+</body>
+</html>

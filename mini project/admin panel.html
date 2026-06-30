@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(to right, #1d976c, #93f9b9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .admin-box {
+      background: white;
+      padding: 25px;
+      width: 380px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background: #1d976c;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #147d57;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-box">
+    <h2>Admin - Add Product</h2>
+
+    <select id="category">
+      <option value="">Select Category</option>
+      <option value="grocery">Grocery</option>
+      <option value="clothing">Clothing</option>
+      <option value="electronics">Electronics</option>
+    </select>
+
+    <input type="text" id="name" placeholder="Product Name">
+    <input type="number" id="price" placeholder="Price (₹)">
+    <input type="text" id="image" placeholder="Image URL">
+
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+
+  <script>
+    function addProduct() {
+      let category = document.getElementById("category").value;
+      let name = document.getElementById("name").value;
+      let price = document.getElementById("price").value;
+      let image = document.getElementById("image").value;
+
+      if (category === "" || name === "" || price === "" || image === "") {
+        alert("Please fill all fields");
+        return;
+      }
+
+      let items = JSON.parse(localStorage.getItem(category)) || [];
+
+      items.push({
+        name: name,
+        price: price,
+        image: image
+      });
+
+      localStorage.setItem(category, JSON.stringify(items));
+
+      alert("Product added to " + category + " section");
+
+      document.getElementById("name").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("image").value = "";
+    }
+  </script>
+
+</body>
+</html>

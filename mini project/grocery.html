@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grocery Section</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+    }
+
+    /* NAVBAR */
+    nav {
+      background: #222;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    nav a:hover {
+      color: #00ffcc;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    /* PRODUCTS */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .product img {
+      width: 50%;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      margin: 10px 0;
+    }
+
+    .product p {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .product button {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product button:hover {
+      background: #e68900;
+    }
+
+    /* CART */
+    .cart {
+      background: white;
+      margin: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .cart h2 {
+      margin-bottom: 10px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="store.html">Home</a>
+    <a href="grocery.html">Grocery</a>
+    <a href="clothing.html">Clothing</a>
+    <a href="electronics.html">Electronics</a>
+  </nav>
+
+  <h1>Grocery Section</h1>
+
+  <!-- PRODUCTS -->
+  <div class="products" id="productList"></div>
+
+  <!-- CART -->
+  <div class="cart">
+    <h2>Cart</h2>
+    <div id="cartItems"></div>
+    <h3 id="total">Total: ₹0</h3>
+    <button onclick="buyNow()">Buy</button>
+
+  </div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem("grocery")) || [];
+    let cart = [];
+
+    const productList = document.getElementById("productList");
+    const cartItems = document.getElementById("cartItems");
+    const totalText = document.getElementById("total");
+    function buyNow() {
+      if (cart.length === 0) {
+        alert("Cart is empty");
+        return;
+      }
+        window.location.href = "order.html";
+      }
+
+
+    function displayProducts() {
+      productList.innerHTML = "";
+
+      if (products.length === 0) {
+        productList.innerHTML = "<h3>No grocery items added by admin</h3>";
+        return;
+      }
+
+      products.forEach((p, index) => {
+        productList.innerHTML += `
+          <div class="product">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+            <p>₹${p.price}</p>
+            <button onclick="addToCart(${index})">Add to Cart</button>
+          </div>
+        `;
+      });
+    }
+
+    function addToCart(index) {
+      cart.push(products[index]);
+      updateCart();
+    }
+
+    function updateCart() {
+      cartItems.innerHTML = "";
+      let total = 0;
+
+      cart.forEach(item => {
+        total += Number(item.price);
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name}</span>
+            <span>₹${item.price}</span>
+          </div>
+        `;
+      });
+
+      totalText.innerText = "Total: ₹" + total;
+    }
+
+    displayProducts();
+  </script>
+
+</body>
+</html>

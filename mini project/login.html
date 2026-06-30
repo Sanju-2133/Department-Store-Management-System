@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Department Grocery Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin:0;
+            padding:0;
+             background-image: url("https://assets.indiaonline.in/businessimg/gallery/650/3081263_e1683.webp");
+             background-size: cover;
+             background-position: center;
+             background-repeat: no-repeat;
+             height: 100vh;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+
+
+            
+        }
+
+        .login-box {
+            background: lch(100% 0.01 296.81 / 0.26);
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #11998e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0c8976;
+        }
+
+        p {
+            color: red;
+        }
+
+            
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="error"></p>
+</div>
+
+<script>
+    function login() {
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+
+        if (user !== "" && pass !== "") {
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("user", user);
+            window.location.href = "store.html";
+        } else {
+            document.getElementById("error").innerText =
+                "Please enter username and password";
+        }
+    }
+</script>
+
+</body>
+</html>
